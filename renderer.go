@@ -319,7 +319,7 @@ func (r *Renderer) renderHeading(w util.BufWriter, source []byte, node ast.Node,
 	} else {
 		if r.Config.HeaderLinks {
 			if s, found := n.AttributeString("id"); found {
-				_, _ = w.WriteString(fmt.Sprintf(` <a href="#%s">#</a>`, s))
+				_, _ = w.WriteString(fmt.Sprintf(` <a class="header-link" href="#%s">#</a>`, s))
 			}
 		}
 		_, _ = w.WriteString("</h")
