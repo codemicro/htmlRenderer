@@ -41,7 +41,7 @@ type Config struct {
 	HardWraps              bool
 	XHTML                  bool
 	Unsafe                 bool
-	TitleLinks             bool
+	HeaderLinks             bool
 	ExternalLinkProtection bool
 
 	CurrentHost string
@@ -63,8 +63,8 @@ func (c *Config) SetOption(name renderer.OptionName, value interface{}) {
 		c.XHTML = value.(bool)
 	case optUnsafe:
 		c.Unsafe = value.(bool)
-	case optTitleLinks:
-		c.TitleLinks = value.(bool)
+	case optHeaderLinks:
+		c.HeaderLinks = value.(bool)
 	case optExternalLinkProtection:
 		c.ExternalLinkProtection = value.(bool)
 	case optTextWriter:
@@ -170,24 +170,24 @@ func WithUnsafe() interface {
 	return &withUnsafe{}
 }
 
-const optTitleLinks renderer.OptionName = "TitleLinks"
+const optHeaderLinks renderer.OptionName = "HeaderLinks"
 
-type withTitleLinks struct{}
+type withHeaderLinks struct{}
 
-func (o *withTitleLinks) SetConfig(c *renderer.Config) {
-	c.Options[optTitleLinks] = true
+func (o *withHeaderLinks) SetConfig(c *renderer.Config) {
+	c.Options[optHeaderLinks] = true
 }
 
-func (o *withTitleLinks) SetHTMLOption(c *Config) {
+func (o *withHeaderLinks) SetHTMLOption(c *Config) {
 	c.Unsafe = true
 }
 
-// WithTitleLinks renders anchors next to Markdown titles with their IDs.
-func WithTitleLinks() interface {
+// WithHeaderLinks renders anchors next to Markdown titles with their IDs.
+func WithHeaderLinks() interface {
 	renderer.Option
 	Option
 } {
-	return &withTitleLinks{}
+	return &withHeaderLinks{}
 }
 
 const optExternalLinkProtection renderer.OptionName = "ExternalLinks"
@@ -317,7 +317,7 @@ func (r *Renderer) renderHeading(w util.BufWriter, source []byte, node ast.Node,
 		}
 		_ = w.WriteByte('>')
 	} else {
-		if r.Config.TitleLinks {
+		if r.Config.HeaderLinks {
 			if s, found := n.AttributeString("id"); found {
 				_, _ = w.WriteString(fmt.Sprintf(` <a href="#%s">#</a>`, s))
 			}
