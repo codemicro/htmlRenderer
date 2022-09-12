@@ -14,22 +14,26 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-var DefaultRenderer = goldmark.New(
-	goldmark.WithExtensions(
-		extension.GFM,
-		extension.Table,
-	),
-	goldmark.WithParserOptions(
-		parser.WithAutoHeadingID(),
-	),
-	goldmark.WithRenderer(
-		// https://github.com/yuin/goldmark/blob/45222d6b038c5fe8876d5a4a3860d854be48c91d/markdown.go#L23=
-		renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(NewRenderer(), 1000))),
-	),
-	goldmark.WithRendererOptions(
-		WithUnsafe(), // We're only going to be dealing with trusted input... I hope?
-	),
-)
+// NewProcessor creates a new instance of goldmark.Markdown for processing
+// Markdown
+func NewProcessor(renderOptions ...renderer.Option) goldmark.Markdown {
+	return goldmark.New(
+		goldmark.WithExtensions(
+			extension.GFM,
+			extension.Table,
+		),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRenderer(
+			// https://github.com/yuin/goldmark/blob/45222d6b038c5fe8876d5a4a3860d854be48c91d/markdown.go#L23=
+			renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(NewRenderer(), 1000))),
+		),
+		goldmark.WithRendererOptions(
+			renderOptions...,
+		),
+	)
+}
 
 // A Config struct has configurations for the HTML based renderers.
 type Config struct {
